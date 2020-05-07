@@ -1,0 +1,78 @@
+<%-include("partials/header")-%>
+
+
+<h1>Browse Available Contracts</h1>
+
+<table class="table table-hover table-sm">
+    <thead>
+<tr>
+    <th>Submitted By</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th>Create Date</th>
+    <th>Value</th>
+</tr>
+</thead>
+<tbody>
+<% for( let index = 0; index < contracts.length; index++ ) { %>
+    <tr>
+        <td><%= contracts[index].originator %></td>
+        <td><%= contracts[index].title %></td>
+        <td><%= contracts[index].type %></td>
+        <td><%= contracts[index].date %></td>
+        <td><%= contracts[index].value %></td>
+    </tr>
+<% } %>
+</tbody>
+</table>
+<hr>
+<h1>Assigned Contracts</h1>
+
+<table class="table table-hover table-sm">
+    <thead>
+<tr>
+    <th>Submitted By</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th>Create Date</th>
+    <th>Value</th>
+</tr>
+</thead>
+<tbody>
+<% for( let index = 0; index < myContracts.length; index++ ) { %>
+    <tr>
+        <td><%= myContracts[index].originator %></td>
+        <td><%= myContracts[index].title %></td>
+        <td><%= myContracts[index].type %></td>
+        <td><%= myContracts[index].date %></td>
+        <td><%= myContracts[index].value %></td>
+    </tr>
+<% } %>
+</tbody>
+</table>
+<hr>
+<h1>Submitted Contracts</h1>
+
+<table class="table table-hover table-sm">
+    <thead>
+<tr>
+    <th>Recipient</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th>Create Date</th>
+    <th>Value</th>
+</tr>
+</thead>
+<tbody>
+<% for( let index = 0; index < subedContracts.length; index++ ) { %>
+    <tr>
+        <td><%= subedContracts[index].recipient %></td>
+        <td><%= subedContracts[index].title %></td>
+        <td><%= subedContracts[index].type %></td>
+        <td><%= subedContracts[index].date %></td>
+        <td><%= subedContracts[index].value %></td>
+    </tr>
+<% } %>
+</tbody>
+</table>
+<%-include("partials/footer")-%>

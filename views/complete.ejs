@@ -1,0 +1,58 @@
+<%-include("partials/header")-%>
+<%let indexArray = ""%>
+<h1 class="display-4">Complete Assigned Contract</h1>
+<!-- <form action="/queryContract" method="post">
+    <div class="container">
+        <div class="row col-3">
+            <div class="form-group">
+                <label for="contractName">Contract Title</label>
+                <select onChange=" " class="custom-select mr-sm-2" id="contractSelect" name="contractSelect">
+                    <option selected></option> <%# loops through array sent fron express, sets value of dropdown to index %> 
+                    <% for( index = 0; index < contractName.length; index++ ) { %>
+                    <option value="<%=index%>"><%= contractName[index].title %></option>
+                    <% } %>
+                </select>
+            </div>
+        </div>
+        <div class="row col-6">
+            <div class="form-group">
+                <label for="originatorName">Assigned Recipient</label>
+                <input type="text" class="form-control" id="originatorName" name="originator" value="">
+            </div>
+        </div>
+    </div>
+</form> -->
+<% for( let index = 0; index < contractName.length; index++ ) { %>
+    <div class="card" style="width: 18rem;">
+        <img src="..." class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><%=contractName[index].title%></h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Details:</li>
+          <li class="list-group-item">originator: <%=contractName[index].originator%></li>
+          <li class="list-group-item">Start Date: <%=contractName[index].startDate%></li>
+          <li class="list-group-item">End Date: <%=contractName[index].endDate%></li>
+          <li class="list-group-item">Value: <%=contractName[index].value%></li>
+        </ul>
+        <div class="card-body">
+          <a href="#" class="card-link">Card link</a>
+        </div>
+      </div>
+<% } %>
+
+
+<!-- <script src="http://code.jquery.com/jquery-1.8.1.min.js"></script>
+<script>
+    //looks at selected dropdown value and pulls to variable
+    arrayIndex = "";
+    $('#contractSelect').change(function(){
+        let arrayIndex = $(this).val();
+        console.log(arrayIndex);
+        $('#originatorName').val(arrayIndex);
+    })
+
+</script> -->
+
+<%-include("partials/footer")-%>

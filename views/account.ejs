@@ -1,0 +1,57 @@
+<%-include("partials/header")-%>
+<h1 class="display-2">My Account</h1>
+
+<h3 class="display-4">Completed Accepted Contracts</h3>
+
+<table class="table table-hover table-sm">
+    <thead>
+<tr>
+    <th>Submitted By</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th>Create Date</th>
+    <th>Completed Date</th>
+    <th>Value</th>
+</tr>
+</thead>
+<tbody>
+<% for( let index = 0; index < finishedContracts.length; index++ ) { %>
+    <tr>
+        <td><%= finishedContracts[index].originator %></td>
+        <td><%= finishedContracts[index].title %></td>
+        <td><%= finishedContracts[index].type %></td>
+        <td><%= finishedContracts[index].date %></td>
+        <td><%= finishedContracts[index].date %></td>
+        <td><%= finishedContracts[index].value %></td>
+    </tr>
+<% } %>
+</tbody>
+</table>
+<hr>
+<h2 class="display-4">Completed Submitted Contracts</h2>
+
+<table class="table table-hover table-sm">
+    <thead>
+<tr>
+    <th>Completed By</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th>Create Date</th>
+    <th>Completed Date</th>
+    <th>Value</th>
+</tr>
+</thead>
+<tbody>
+<% for( let index = 0; index < finishedContracts.length; index++ ) { %>
+    <tr>
+        <td><%= crtdContracts[index].recipient %></td>
+        <td><%= crtdContracts[index].title %></td>
+        <td><%= crtdContracts[index].type %></td>
+        <td><%= crtdContracts[index].date %></td>
+        <td><%= crtdContracts[index].date %></td>
+        <td><%= crtdContracts[index].value %></td>
+    </tr>
+<% } %>
+</tbody>
+</table>
+<%-include("partials/footer")-%>

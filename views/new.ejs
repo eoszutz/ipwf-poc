@@ -1,0 +1,48 @@
+<%-include("partials/header")-%>
+<div class="container py-3">
+    <h1>New contract</h1>
+    <div class="col-xl-4 col-md-6 m-auto">
+        <form action="/newcontract" method="post">
+            <div class="form-group">
+                <label for="originatorName">Originator</label>
+                <input type="text" class="form-control" id="originatorName" name="originator">
+                <small id="originDesc" class="form-text text-muted">Your name will be attached to this contract</small>
+            </div>
+            <div class="form-group">
+                <label for="titleText">Contract Description / Title</label>
+                <input type="text" class="form-control" id="titleText" name="titleText" autocomplete="false">
+            </div>
+            <div class="form-group">
+                <label for="valueField">Contract Value</label>
+                <input type="number" class="form-control" id="valueField" name="valueField">
+                <small id="valuDesc" class="form-text text-muted">This will be deducted from your account Karma
+                    Balance</small>
+            </div>
+            <div class="form-group">
+                <label for="contractType">Contract Type</label>
+                <select class="custom-select mr-sm-2" id="contractType" name="contractType">
+                    <option selected></option>
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                    <option value="bounty">Bounty</option>
+                </select>
+            </div>
+                <div class="form-group">
+                    <label for="recipientAcct">Recipient</label>
+                    <input type="text" id="recipientAcct" name="recipientAcct" class="form-control"
+                        placeholder="account name">
+                    <small id="recipientDesc" class="form-text text-muted">Required if contract type is
+                        "private"</small>
+                </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+<script src="http://code.jquery.com/jquery-1.8.1.min.js"></script>
+<script>
+    var $inputs = $('#recipientAcct');
+        $('#contractType').change(function(){
+        $inputs.prop('disabled', $(this).val() !== 'private');
+    });
+</script>
+<%-include("partials/footer")-%>
