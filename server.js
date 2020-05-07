@@ -1,6 +1,8 @@
+require('dotenv').config()
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const encrypt = require("mongoose-encryption");
 const ejs = require("ejs");
 const http = require('http');
 
@@ -11,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //db-------------------------------------------------------------
 //db connection
-mongoose.connect("mongodb://localhost:27017/ipwfPOC", {
+mongoose.connect("mongodb+srv://admin-elliot:DmJpImqT86ORkzZh@cluster0-vgkaf.azure.mongodb.net/test?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -24,7 +26,10 @@ const contractSchema = new mongoose.Schema({
   type: String,
   recipient: String,
   startDate: Date,
-  endDate: Date
+  endDate: Date,
+  status: String,
+  expirationDate: Date,
+  reqBody: Object
 });
 //dbLoginSchema
 const loginSchema = new mongoose.Schema({
@@ -32,23 +37,57 @@ const loginSchema = new mongoose.Schema({
   password: String,
   karma: Number
 })
+
+
+loginSchema.plugin(encrypt, {secret: process.env.SECRET, encryptedFields: ["password"]});
+
 //db post
 const Contract = mongoose.model("Contract", contractSchema);
 //db login
 const Login = mongoose.model("Login", loginSchema);
 
+
+
+//test needs to be converted to true login variable >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+const assignee = "eoszutz";
 //---------------------------------------------------------------
 //entry point login
 app.get("/", (req, res) => {
   res.render("home", {status: "Please Log In"});
 });
 
-//browse existing
-//test needs to be converted to true login variable >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-const assignee = "eoszutz";
+//login post
+app.post("/login", (req, res) => {
+  const loginUsername = req.body.userLogin;
+  const loginPass = req.body.userPass;
+  Login.findOne({username: loginUsername}, function(err, foundLogin){
+    if(!err) {
+      if(!foundLogin){
+        //if no login, create one with given data
+        const login = new Login({
+          username: req.body.userLogin,
+          password: req.body.userPass
+        });
+        login.save(function(err){
+          if(!err){
+            //reload home
+            res.render("home", {status: "no account found, created account. Please login"})
+          }
+        })
+      } else { if(foundLogin.password === loginPass){
+        //push user to browse screen
+        res.redirect("/browse");
+      } else { res.render("home", {status: "Invalid username or Password"})}
+      }
+    }
+  })
+  
+})
 
+
+//browse existing
 app.get("/browse", (req, res) => {
-  Contract.find({completed: false, type: {"$in":["public","bounty"]}}, (err, foundContracts) => {
+  Contract.find({completed: false, recipient: "",type: {"$in":["public","bounty"]}}, (err, foundContracts) => {
     if(!err){
       if (!foundContracts){
         res.send("no open contracts")
@@ -74,7 +113,7 @@ app.get("/browse", (req, res) => {
   
 });
 
-//update an assigned contract
+//remder update page
 app.get("/complete", (req, res) => {
   Contract.find({completed: false, recipient: assignee}, (err, userContracts) => {
     if(!err){
@@ -83,7 +122,7 @@ app.get("/complete", (req, res) => {
   })
 });
 
-//app.get:me
+//account page
 app.get("/account", (req, res) => {
       Contract.find({completed: true, recipient: assignee}, (err, compContracts) => {
         if(!err){
@@ -110,36 +149,11 @@ app.get("/account", (req, res) => {
 
 
 //------------------------------------------------------------
-//login
-app.post("/login", (req, res) => {
-  const loginUsername = req.body.userLogin;
-  const loginPass = req.body.userPass;
-  Login.findOne({username: loginUsername, password: loginPass}, function(err, foundLogin){
-    if(!err) {
-      if(!foundLogin){
-        //if no login, create one with given data
-        const login = new Login({
-          username: req.body.userLogin,
-          password: req.body.userPass
-        });
-        login.save(function(err){
-          if(!err){
-            //reload home
-            res.render("home", {status: "no account found, created account. Please login"})
-          }
-        })
-      } else { 
-        //push user to browse screen
-        res.redirect("/browse");
-      }
-    }
-  })
-  
-})
+
 
 //post new contract
 app.post("/newcontract", (req, res) => {
-  //pull variables from form
+  //pull variables from form and applies schema
   const contractData = new Contract({
     originator: req.body.originator, 
     title: req.body.titleText, 
@@ -147,7 +161,11 @@ app.post("/newcontract", (req, res) => {
     value: req.body.valueField,
     type: req.body.contractType,
     recipient: req.body.recipientAcct,
-    date: new Date() });
+    startDate: new Date(),
+    status: "open",
+    expirationDate: req.body.expDate, 
+    reqBody: req.body.cbody
+  })
   //save object
   contractData.save( err => {
     if(!err) {
@@ -160,7 +178,27 @@ app.post("/newcontract", (req, res) => {
 
 
 //post update to an assigned contract
+app.post("/contract/complete/:id", (req, res) => {
+  const updateContractID = req.params.id;
+  finalDate = new Date();
+  Contract.updateOne({_id: updateContractID}, {completed: true, endDate: finalDate}, (err, updateEntry) => {
+    if (!err) {
+      console.log(updateEntry);
+    };
+    res.redirect("/complete");
+  });
+});
 
+//claim a contract
+app.post("/contract/claim/:id", (req, res) => {
+  const claimID = req.params.id;
+  Contract.updateOne({_id: claimID}, {recipient: assignee}, (err, updateEntry) => {
+    if(!err) {
+      console.log(updateEntry);
+    }
+    res.redirect("/browse")
+  })
+})
 
 //----------------------------------------------------------
 //server value add/sub idk

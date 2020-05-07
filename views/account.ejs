@@ -20,8 +20,8 @@
         <td><%= finishedContracts[index].originator %></td>
         <td><%= finishedContracts[index].title %></td>
         <td><%= finishedContracts[index].type %></td>
-        <td><%= finishedContracts[index].date %></td>
-        <td><%= finishedContracts[index].date %></td>
+        <td><%= finishedContracts[index].startDate %></td>
+        <td><%= finishedContracts[index].endDate %></td>
         <td><%= finishedContracts[index].value %></td>
     </tr>
 <% } %>
@@ -42,13 +42,13 @@
 </tr>
 </thead>
 <tbody>
-<% for( let index = 0; index < finishedContracts.length; index++ ) { %>
+<% for( let index = 0; index < crtdContracts.length; index++ ) { %>
     <tr>
         <td><%= crtdContracts[index].recipient %></td>
         <td><%= crtdContracts[index].title %></td>
         <td><%= crtdContracts[index].type %></td>
-        <td><%= crtdContracts[index].date %></td>
-        <td><%= crtdContracts[index].date %></td>
+        <td><%= crtdContracts[index].startDate %></td>
+        <td><%= crtdContracts[index].endDate %></td>
         <td><%= crtdContracts[index].value %></td>
     </tr>
 <% } %>
