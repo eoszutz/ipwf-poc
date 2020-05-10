@@ -13,16 +13,14 @@
     <div class="container">
 
         <div class="col-4 m-auto">
-            <h1>Login</h1>
+            <h1>register</h1>
+
             <div class="form-group">
-                <form action="/login" method="post">
+                <form action="/register" method="post">
                     <input class="form-control" type="text" placeholder="username" name="username">
                     <input class="form-control" type="text" placeholder="password" name="password">
-                    <button class="btn btn-primary" type="submit" name="submitLogins" value="submitLogin">Login</button>
-                    <%= status %>
+                    <button class="btn btn-secondary" type="submit" name="submitReg" value="submitReg">register</button>
                 </form>
             </div>
-            <button onClick="window.location.href='./register';" class="btn btn-secondary">Register</button>
-
         </div>
-        <%-include("partials/footer")-%>
+            <%-include("partials/footer")-%>

@@ -7,8 +7,8 @@
                 <div class="col-4">
                     <div class="form-group">
                         <label for="originatorName">Originator</label>
-                        <input type="text" class="form-control" id="originatorName" name="originator">
-                        <small id="originDesc" class="form-text text-muted">Your name will be attached to this
+                        <input disabled="true" type="text" class="form-control" id="originatorName" name="originator" value="<%=userID%>">
+                        <small id="originDesc" class="form-text text-muted">Your username will be permanentaly attached to this
                             contract</small>
                     </div>
                     <div class="form-group">
@@ -33,7 +33,7 @@
                     <div class="form-group">
                         <label for="recipientAcct">Recipient</label>
                         <input type="text" id="recipientAcct" name="recipientAcct" class="form-control"
-                            placeholder="account name">
+                            placeholder="account name" disabled="true">
                         <small id="recipientDesc" class="form-text text-muted">Required if contract type is
                             "private"</small>
                     </div>
