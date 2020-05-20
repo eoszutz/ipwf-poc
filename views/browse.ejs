@@ -12,6 +12,7 @@
     <th>Type</th>
     <th>Create Date</th>
     <th>Value</th>
+    <th>claim</th>
 </tr>
 </thead>
 <tbody>
@@ -38,6 +39,7 @@
     <th>Type</th>
     <th>Create Date</th>
     <th>Value</th>
+    <th>claim</th>
 </tr>
 </thead>
 <tbody>
@@ -48,6 +50,7 @@
         <td><%= myContracts[index].type %></td>
         <td><%= myContracts[index].startDate %></td>
         <td><%= myContracts[index].value %></td>
+        <td><form action="/contract/accept/<%=myContracts[index]._id%>" method="post"><button type="submit" class="btn btn-secondary" href=>accept</button></form></td>
     </tr>
 <% } %>
 </tbody>

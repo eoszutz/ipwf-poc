@@ -2,66 +2,168 @@
 <div class="container py-3">
     <h1>New contract</h1>
     <div class="m-auto">
-        <form action="/newcontract" method="post">
-            <div class="row">
-                <div class="col-4">
-                    <div class="form-group">
-                        <label for="originatorName">Originator</label>
-                        <input disabled="true" type="text" class="form-control" id="originatorName" name="originator" value="<%=userID%>">
-                        <small id="originDesc" class="form-text text-muted">Your username will be permanentaly attached to this
-                            contract</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="titleText">Contract Description / Title</label>
-                        <input type="text" class="form-control" id="titleText" name="titleText" autocomplete="false">
-                    </div>
-                    <div class="form-group">
-                        <label for="valueField">Contract Value</label>
-                        <input type="number" class="form-control" id="valueField" name="valueField">
-                        <small id="valuDesc" class="form-text text-muted">This will be deducted from your account Karma
-                            Balance</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="contractType">Contract Type</label>
-                        <select class="custom-select mr-sm-2" id="contractType" name="contractType">
-                            <option selected></option>
-                            <option value="public">Public</option>
-                            <option value="private">Private</option>
-                            <option value="bounty">Bounty</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="recipientAcct">Recipient</label>
-                        <input type="text" id="recipientAcct" name="recipientAcct" class="form-control"
-                            placeholder="account name" disabled="true">
-                        <small id="recipientDesc" class="form-text text-muted">Required if contract type is
-                            "private"</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="expdate">Expiration Date</label>
-                        <input type="date" id="expdate" name="expDate" class="form-control">
-                        <small id="expDesc" class="form-text text-muted">Date contract will expire if not
-                            completed</small>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="cBody">Contract Body</label>
-                        <textarea type="text" id="cBody" name="cbody" class="form-control"
-                            placeholder="placeholder for content that is object" rows="20"></textarea>
-                    </div>
-                </div>
+        <form action="/newcontract" method="post" id="contractForm">
+            <h2>Contract Header</h2>
+            <div class="form-group">
+                <label for="userID">Submitted By</label>
+                <input type="text" disabled="true" class="form-control" id="userID" value="<%=userID%>">
+                <small id="userDescriptor" class="form-text text-muted">This identifier will be permanently attached to
+                    the contract</small>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+            <div class="form-group">
+                <label for="contractTitle">Contract Title</label>
+                <input type="text" class="form-control" id="titleText" placeholder="title for contract" name="titleText"
+                    autocomplete="off">
+                <small id="titleDescriptor" class="form-text text-muted">A descriptive title for your contract</small>
+            </div>
+            <div id="newParam">
+                <h2>Contract Body</h2>
+                <div id="contractBody"></div>
+                <% for (let z = 1; z<=5; z++){ %>
+                <div class="container" id="step<%=z%>">
+                    <h4>Step <%=z%></h4>
+                    <div class="form-row" id="paramRow<%=z%>">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="parameter<%=z%>">Parameter</label>
+                                <select class="form-control" id="parameter<%=z%>">
+                                    <% for (let i = 0; i < parameters.length; i++){ %>
+                                    <option value="<%=parameters[i].paramName%>"><%=parameters[i].paramName%></option>
+                                    <% } %>
+                                </select>
+                                <small id="paramDescriptor" class="form-text text-muted">what should be done?</small>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+                <% } %>
+
+            </div>
     </div>
+    <div class="form-row">
+        <div class="form-group col-2">
+            <input type="number" class="form-control" id="totalParameters" name="totalParameters" value=1
+                disabled="true">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <button type="button" class="btn btn-success" name="addField" id="addField">Add
+                Parameter</button>
+            <button type="button" class="btn btn-danger" name="remField" id="removeField">Remove
+                Parameter</button>
+        </div>
+    </div>
+    <hr>
+    <hr>
+
+    <!--<button class="btn btn-primary" action="submit">Submit Contract</button> --> 
+    <button class="btn btn-primary" id="testsubmit">Submit Contract</button>
+    </form>
 </div>
-<script src="http://code.jquery.com/jquery-1.8.1.min.js"></script>
+</div>
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.5.0.js"></script>
 <script>
-    var $inputs = $('#recipientAcct');
-    $('#contractType').change(function () {
-        $inputs.prop('disabled', $(this).val() !== 'private');
-    });
+    let inputNumber = 5;
+    //let inputNumber = $("#totalParameters").val();
+    /*
+       function add() {
+           inputNumber ++;
+           console.log(inputNumber);
+           var newField = "<div class='container' id='step" + inputNumber + "'><h4>Step " + inputNumber + "</h4><div class='form-row' id='paramRow" + inputNumber + "'><div class='col'><div class='form-group'><label for='parameter" + inputNumber + "'>Parameter</label><select class='form-control' id='parameter" + inputNumber + "'><% for (let i = 0; i < parameters.length; i++){ %><option value=<%=parameters[i].paramName%>><%=parameters[i].paramName%></option><% } %></select><small id='paramDescriptor' class='form-text text-muted'>what should be done?</small></div></div>";
+   
+           $("#newParam").append($(newField).hide().fadeIn(500));
+           $("#totalParameters").val(inputNumber);
+       }
+       function remove() {
+           lastInputNum = $("#totalParameters").val();
+           if (lastInputNum > 0) {
+               $("#step" + lastInputNum).slideUp("normal", () => {
+                   $("#step" + lastInputNum).remove();
+               });
+               $("#totalParameters").val(lastInputNum - 1);
+           }
+       }
+   
+       $("#addField").on("click", add);
+       $("#removeField").on("click", remove) */
+
+    /*     $("[id^=parameter]").change( function() {
+            var selectedValue = $(this).val();
+            console.log(selectedValue);
+            $("#paramValue1").attr('name', selectedValue);
+        }) */
+
+
+    $("#parameter1").change(function () {
+        const selectedValue = $("#parameter1").val();
+        const inputGenerator = "<div class='col'><div class='form-group'><label for='paramValue1'>Value</label><input type='text' class='form-control' id='paramValue1' name='" + selectedValue + "' placeholder='value' autocomplete='off'><small id='valueDescriptor' class='form-text text-muted'>What indicates that this step is done?</small></div></div></div><hr>"
+        $("#parameter1").parent().parent().parent().append(inputGenerator);
+    })
+    $("#parameter2").change(function () {
+        const selectedValue = $("#parameter2").val();
+        const inputGenerator = "<div class='col'><div class='form-group'><label for='paramValue2'>Value</label><input type='text' class='form-control' id='paramValue2' name='" + selectedValue + "' placeholder='value' autocomplete='off'><small id='valueDescriptor' class='form-text text-muted'>What indicates that this step is done?</small></div></div></div><hr>"
+        $("#parameter2").parent().parent().parent().append(inputGenerator);
+    })
+    $("#parameter3").change(function () {
+        const selectedValue = $("#parameter3").val();
+        const inputGenerator = "<div class='col'><div class='form-group'><label for='paramValue3'>Value</label><input type='text' class='form-control' id='paramValue3' name='" + selectedValue + "' placeholder='value' autocomplete='off'><small id='valueDescriptor' class='form-text text-muted'>What indicates that this step is done?</small></div></div></div><hr>"
+        $("#parameter3").parent().parent().parent().append(inputGenerator);
+    })
+    $("#parameter4").change(function () {
+        const selectedValue = $("#parameter4").val();
+        const inputGenerator = "<div class='col'><div class='form-group'><label for='paramValue4'>Value</label><input type='text' class='form-control' id='paramValue4' name='" + selectedValue + "' placeholder='value' autocomplete='off'><small id='valueDescriptor' class='form-text text-muted'>What indicates that this step is done?</small></div></div></div><hr>"
+        $("#parameter4").parent().parent().parent().append(inputGenerator);
+    })
+    $("#parameter5").change(function () {
+        const selectedValue = $("#parameter5").val();
+        const inputGenerator = "<div class='col'><div class='form-group'><label for='paramValue5'>Value</label><input type='text' class='form-control' id='paramValue5' name='" + selectedValue + "' placeholder='value' autocomplete='off'><small id='valueDescriptor' class='form-text text-muted'>What indicates that this step is done?</small></div></div></div><hr>"
+        $("#parameter5").parent().parent().parent().append(inputGenerator);
+    })
+
+
+    $("#testsubmit").click(function (event) {
+        event.preventDefault();
+        let title = $("#titleText").val();
+        let originator = $("#userID").val();
+        let param1name = $("#paramValue1").attr("name");
+        let param1value = $("#paramValue1").val();
+        let param2name = $("#paramValue2").attr("name");
+        let param2value = $("#paramValue2").val();
+        let param3name = $("#paramValue3").attr("name");
+        let param3value = $("#paramValue3").val();
+        let param4name = $("#paramValue4").attr("name");
+        let param4value = $("#paramValue4").val();
+        let param5name = $("#paramValue5").attr("name");
+        let param5value = $("#paramValue5").val();
+
+        let data = {
+            titleText: title,
+            originator: originator,
+            totalSteps: 5, 
+            reqBody: {
+                step1: {
+                    [param1name]: param1value
+                },
+                step2: {
+                    [param2name]: param2value
+                },
+                step3: {
+                    [param3name]: param3value
+                },
+                step4: {
+                    [param4name]: param4value
+                },
+                step5: {
+                    [param5name]: param5value
+                }
+            }
+        }
+        console.log(data)
+        $.post("/newcontract", data)
+    })
 </script>
+
 <%-include("partials/footer")-%>

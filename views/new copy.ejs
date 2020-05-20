@@ -1,0 +1,160 @@
+<%-include("partials/header")-%>
+<div class="container py-3">
+    <h1>New contract</h1>
+    <div class="m-auto">
+        <form action="/newcontract" method="post" id="contractForm">
+            <div class="row">
+                <div class="col-lg-4 col-sm-6">
+                    <h2>Contract Header</h2>
+                    <div class="form-group">
+                        <label for="originatorName">Originator</label>
+                        <input disabled="true" type="text" class="form-control" id="originatorName" name="originator"
+                            value="<%=userID%>">
+                        <small id="originDesc" class="form-text text-muted">Your username will be permanentaly attached
+                            to this
+                            contract</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="titleText">Contract Description / Title</label>
+                        <input type="text" class="form-control" id="titleText" name="titleText" autocomplete="false">
+                    </div>
+                    <div class="form-group">
+                        <label for="parameterSelect">Parameter dropdown</label>
+                        <select class="form-control" id="selector1">
+                            <option selected></option>
+                            <option value="recipient">Recipient</option>
+                            <option value="karma">Karma</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Example select</label>
+                        <select class="form-control" id="exampleFormControlSelect1">
+                          <option>1</option>
+                          <option>2</option>
+                          <option>3</option>
+                          <option>4</option>
+                          <option>5</option>
+                        </select>
+                      </div>
+                    <hr>
+                    <div class="form-group">
+                        <label for="step1">Step 1 selector</label>
+                        <select id="step1"><% for(let i = 0; i<parameters.length;i++){%><option><%=parameters[i].paramName%></option><% } %></select>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="parameter_1">step1 value</label>
+                    <input type="text" id="parameter_1" value="">
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <h2>Contract Body</h2>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-md-10 col-sm-12">
+                        <div class="row">
+                            <button type="button" class="btn btn-success" name="addField" id="addNewField">Add
+                                Parameter</button>
+                        </div>
+                        <div class="container" id="newParam">
+                            <div class="row" id="paramRow1">
+                                <div class="form-group">
+                                    <label for="parameter_1">Step 1:</label>
+                                    <select id="step1"><% for(let i = 0; i<parameters.length;i++){%><option><%=parameters[i].paramName%></option><% } %></select>
+                                    <input type="text" id="parameter_1" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <button type="button" class="btn btn-danger" name="remField" id="removeField">Remove
+                                Parameter</button>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="titleText">Parameters Added</label>
+                                <input type="number" class="form-control" id="totalParameters" name="totalParameters"
+                                    disabled="true" value=1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reqParams">Request Params</label>
+                    <input type="text" id="reqParams" name="reqParams" class="form-control"
+                        placeholder="output of added parameters">
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                        <label for="cBody">Raw Output</label>
+                        <textarea type="text" id="cBody" name="cbody" class="form-control"
+                            placeholder="placeholder for content that is object" rows="20"></textarea>
+                    </div>
+                </div>
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <div class="btn btn-primary" name="postReq" id="postReqID">jquery post</div>
+    </div>
+</div>
+
+
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.5.0.js"></script>
+<script>
+//basically trying to get a raw output to render dynamically, will need to come back to this to get it to work.
+// add and remove inputs -----------------
+$(document).ready( () => {
+    function add() {
+        var inputNumber = parseInt($("#totalParameters").val()) + 1;
+        var newField = "<div class='row' id='paramRow" + inputNumber + "'> <div class='form-group'><label for='parameter_" + inputNumber + "'>Step " + inputNumber + ":</label><select id='step" + inputNumber +"'><% for(let i = 0; i<parameters.length;i++){%><option><%=parameters[i].paramName%></option><% } %></select><input type='text' id='parameter_" + inputNumber + "'></div></div>";
+
+        $("#newParam").append(newField);
+        $("#totalParameters").val(inputNumber);
+    }
+    function remove() {
+        lastInputNum = $("#totalParameters").val();
+        if (lastInputNum > 0) {
+            $("#paramRow" + lastInputNum).remove();
+            $("#totalParameters").val(lastInputNum - 1);
+        }
+    }
+
+    $("#addNewField").on("click", add);
+    $("#removeField").on("click", remove)
+
+    
+//raw output generation
+    rawOriginator = "{ originator:" + $("#originatorName").val() + "}"
+    rawTitle = "{ title:" + $("#titleText").val() + "}"
+    
+    //loop through the variable parameters added by user
+    function paramLoop() {
+        let paramArray = {};
+         for (i = 1; i <= $("#totalParameters").val(); i++) {
+            let key = $("#step"+i+" option:selected").text();
+            let value = $("#parameter_" + i).val();
+            let paramArray2 = {key:value};
+            Object.assign(paramArray, paramArray2)
+         }
+         return paramArray;
+
+    };
+    //render on change on any parameters
+    $("#newParam").change(function(){
+        $("#reqParams").val(paramLoop)
+    });
+
+    $("#postReqID").click(function(event) {
+        $.post("/newcontract", {rawOriginator, rawTitle, paramLoop, data}, console.log(paramLoop()));
+    });
+
+});
+</script>
+<%-include("partials/footer")-%>

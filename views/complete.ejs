@@ -2,24 +2,26 @@
 <%let indexArray = ""%>
 <h1 class="display-4">Complete Assigned Contract</h1>
 
-<h2 class="display-4">Contracts open: <%=contractName.length%> </h2>
+
 
 <div class="container">
+    <h2 class="display-4">Claimed Status</h2>
+    <h4>Open: <%=assignedContract.length%> </h4>
     <div class="row">
-        <% for( let index = 0; index < contractName.length; index++ ) { %>
+        <% for( let index = 0; index < assignedContract.length; index++ ) { %>
         <div class="card" style="width: 18rem;">
             <div class="card-body">
-                <h5 class="card-title"><%=contractName[index].title%></h5>
-                <p class="card-text">Details:<%=contractName[index].reqBody%></p>
+                <h5 class="card-title"><%=assignedContract[index].title%></h5>
+                <p class="card-text">Details:<%=assignedContract[index].reqBody%></p>
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">originator: <%=contractName[index].originator%></li>
-                <li class="list-group-item">Start Date: <%=contractName[index].startDate%></li>
-                <li class="list-group-item">End Date: <%=contractName[index].endDate%></li>
-                <li class="list-group-item">Value: <%=contractName[index].value%></li>
+                <li class="list-group-item">originator: <%=assignedContract[index].originator%></li>
+                <li class="list-group-item">Start Date: <%=assignedContract[index].startDate%></li>
+                <li class="list-group-item">End Date: <%=assignedContract[index].endDate%></li>
+                <li class="list-group-item">Value: <%=assignedContract[index].value%></li>
             </ul>
             <div class="card-body">
-                <form action="/contract/complete/<%=contractName[index]._id%>" method="post">
+                <form action="/contract/completerec/<%=assignedContract[index]._id%>" method="post">
                     <button type="submit" class="btn btn-primary">Mark Complete</button>
                 </form>
             </div>
@@ -28,4 +30,43 @@
     </div>
 </div>
 
+<div class="container">
+    <h2 class="display-4">Verification Status</h2>
+    <h4>Open: <%=submittedContract.length%> </h4>
+    <div class="row">
+        <% for( let index = 0; index < submittedContract.length; index++ ) { %>
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title"><%=submittedContract[index].title%></h5>
+                <p class="card-text">Details:<%=submittedContract[index].reqBody%></p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">originator: <%=submittedContract[index].originator%></li>
+                <li class="list-group-item">Start Date: <%=submittedContract[index].startDate%></li>
+                <li class="list-group-item">End Date: <%=submittedContract[index].endDate%></li>
+                <li class="list-group-item">Value: <%=submittedContract[index].value%></li>
+            </ul>
+            <div class="card-body">
+                <form action="/contract/completeorig/<%=submittedContract[index]._id%>" method="post">
+                    <button type="submit" class="btn btn-primary">Mark Complete</button>
+                </form>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</div>
+<div>
+    <input type="text" name="contractID" id="contractID" placeholder="contractid">
+    <button class="btn btn-primary" id="manualUpdate">manual update request</button>
+</div>
+
 <%-include("partials/footer")-%>
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.5.0.js"></script>
+<script>
+    $("#manualUpdate").click(function (event) {
+        event.preventDefault();
+        data = {_id: $("#contractID").val()}
+        $.post("/updatecontract", data)
+    })
+</script>
